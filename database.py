@@ -1,123 +1,176 @@
+"""
+Jeremy's Hypertrophy System
+Database Initialization
+
+Version: 1.1.0
+"""
+
 import sqlite3
-import os
 
-DB_FOLDER = "data"
-DB_NAME = "jhs.db"
-
-os.makedirs(DB_FOLDER, exist_ok=True)
-
-DB_PATH = os.path.join(DB_FOLDER, DB_NAME)
-
-
-def get_connection():
-    return sqlite3.connect(DB_PATH)
+from config import DATABASE_PATH, DATA_DIR
 
 
 def create_database():
 
-    conn = get_connection()
-    cur = conn.cursor()
+    DATA_DIR.mkdir(exist_ok=True)
 
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS exercises(
+    connection = sqlite3.connect(DATABASE_PATH)
+
+    cursor = connection.cursor()
+
+
+    # Exercises Table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS exercises (
+
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        workout TEXT,
-        exercise TEXT,
-        muscle TEXT,
+
+        workout TEXT NOT NULL,
+
+        exercise_name TEXT NOT NULL,
+
+        muscle_group TEXT,
+
+        equipment TEXT,
+
         rep_min INTEGER,
+
         rep_max INTEGER,
-        rest INTEGER
+
+        rest_time INTEGER
+
     )
     """)
 
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS workout_sessions(
+
+    # Workout Templates
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS workout_templates (
+
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        workout_name TEXT UNIQUE NOT NULL
+
+    )
+    """)
+
+
+    # Workout Exercise Relationships
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS workout_exercises (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        workout_id INTEGER,
+
+        exercise_id INTEGER,
+
+        exercise_order INTEGER
+
+    )
+    """)
+
+
+    # Completed Workouts
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS workout_sessions (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        date TEXT,
+
         workout TEXT,
-        date TEXT,
+
         duration INTEGER,
+
         notes TEXT
+
     )
     """)
 
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS workout_sets(
+
+    # Individual Sets
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS workout_sets (
+
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+
         session_id INTEGER,
+
         exercise TEXT,
+
         set_number INTEGER,
+
         weight REAL,
+
         reps INTEGER,
-        rir REAL
+
+        rir INTEGER
+
     )
     """)
 
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS bodyweight(
+
+    # PR Tracking
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS personal_records (
+
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        date TEXT,
-        weight REAL
+
+        exercise TEXT,
+
+        best_weight REAL,
+
+        best_reps INTEGER,
+
+        estimated_1rm REAL
+
     )
     """)
 
-    conn.commit()
 
-    load_exercises(conn)
+    # Body Weight
 
-    conn.close()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS body_weight (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        date TEXT,
+
+        weight REAL
+
+    )
+    """)
 
 
-def load_exercises(conn):
+    # Application Settings
 
-    cur = conn.cursor()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS settings (
 
-    cur.execute("SELECT COUNT(*) FROM exercises")
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    count = cur.fetchone()[0]
+        setting_name TEXT,
 
-    if count > 0:
-        return
+        setting_value TEXT
 
-    exercises = [
+    )
+    """)
 
-        ("A","Goblet Squat","Quads",8,10,180),
-        ("A","DB Bench Press","Chest",8,12,150),
-        ("A","Cable Row","Back",10,12,120),
-        ("A","DB Romanian Deadlift","Hamstrings",10,12,150),
-        ("A","DB Lateral Raise","Shoulders",12,15,90),
-        ("A","Cable Pushdown","Triceps",12,15,90),
-        ("A","Cable Crunch","Abs",15,20,60),
 
-        ("B","Bulgarian Split Squat","Quads",10,12,180),
-        ("B","Incline DB Press","Chest",8,12,150),
-        ("B","Lat Pulldown","Back",10,12,120),
-        ("B","DB Shoulder Press","Shoulders",8,12,120),
-        ("B","Face Pull","Rear Delts",12,15,90),
-        ("B","Incline Curl","Biceps",10,12,90),
-        ("B","Standing Calf Raise","Calves",12,15,90),
+    connection.commit()
 
-        ("C","Leg Press","Quads",10,12,180),
-        ("C","Chest Supported DB Row","Back",10,12,120),
-        ("C","Cable Fly","Chest",12,15,90),
-        ("C","DB Romanian Deadlift","Hamstrings",8,10,150),
-        ("C","DB Lateral Raise","Shoulders",12,15,90),
-        ("C","Overhead Rope Extension","Triceps",10,12,90),
-        ("C","Hanging Knee Raise","Abs",12,15,60),
+    connection.close()
 
-        ("D","Walking Lunge","Quads",10,12,120),
-        ("D","Neutral Grip Pulldown","Back",10,12,120),
-        ("D","Flat DB Bench Press","Chest",8,10,150),
-        ("D","DB Shoulder Press","Shoulders",10,12,120),
-        ("D","Rear Delt Fly","Rear Delts",12,15,90),
-        ("D","Hammer Curl","Biceps",10,12,90),
-        ("D","Seated Calf Raise","Calves",15,20,90)
 
-    ]
+if __name__ == "__main__":
 
-    cur.executemany("""
-        INSERT INTO exercises
-        (workout,exercise,muscle,rep_min,rep_max,rest)
-        VALUES (?,?,?,?,?,?)
-    """, exercises)
+    create_database()
 
-    conn.commit()
+    print("JHS database created successfully.")

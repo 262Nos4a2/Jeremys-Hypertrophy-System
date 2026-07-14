@@ -1,0 +1,65 @@
+[
+    {
+        "workout": "A",
+        "exercise_name": "Goblet Squat",
+        "muscle_group": "Quadriceps",
+        "equipment": "Dumbbell",
+        "rep_min": 8,
+        "rep_max": 12,
+        "rest_time": 120
+    },
+    {
+        "workout": "A",
+        "exercise_name": "Dumbbell Bench Press",
+        "muscle_group": "Chest",
+        "equipment": "Dumbbell",
+        "rep_min": 8,
+        "rep_max": 12,
+        "rest_time": 120
+    },
+    {
+        "workout": "A",
+        "exercise_name": "Cable Row",
+        "muscle_group": "Back",
+        "equipment": "Cable",
+        "rep_min": 8,
+        "rep_max": 12,
+        "rest_time": 90
+    },
+    {
+        "workout": "A",
+        "exercise_name": "Dumbbell Romanian Deadlift",
+        "muscle_group": "Hamstrings",
+        "equipment": "Dumbbell",
+        "rep_min": 8,
+        "rep_max": 12,
+        "rest_time": 120
+    },
+    {
+        "workout": "A",
+        "exercise_name": "Dumbbell Lateral Raise",
+        "muscle_group": "Shoulders",
+        "equipment": "Dumbbell",
+        "rep_min": 12,
+        "rep_max": 15,
+        "rest_time": 60
+    },
+    {
+        "workout": "A",
+        "exercise_name": "Cable Pushdown",
+        "muscle_group": "Triceps",
+        "equipment": "Cable",
+        "rep_min": 10,
+        "rep_max": 15,
+        "rest_time": 60
+    },
+    {
+        "workout": "A",
+        "exercise_name": "Cable Crunch",
+        "muscle_group": "Core",
+        "equipment": "Cable",
+        "rep_min": 10,
+        "rep_max": 15,
+        "rest_time": 60
+    }
+]
